@@ -94,5 +94,28 @@ console.log(stu.sex);
 // stu.logStudentInfo();
 // console.log(stu.#id);
 
+// new.target 
+
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    console.log(new.target);
+    console.log(new.target === Point); //在构造函数中, new.target的值就是构造函数的引用
+  }
+}
+
+const p1 = new Point();
+
+function createPoint(x, y) {
+  console.log(new.target);
+  return { x, y };
+}
+
+const p2 = createPoint(0, 0);
+
+
+
+
 
 
