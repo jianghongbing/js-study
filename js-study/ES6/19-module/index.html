@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ES Module</title>
+</head>
+<body>
+  <script type="module">
+    // import age, { role, name, foo, Person} from './module-a.js';
+    // import { role, name, foo, Person} from './module-a.js';
+    // import user from './module-a.js'; 
+    import user, { role, name, foo, Person} from './module-a.js'; //直接写在一行 
+    console.log(`role:${role}`);
+    console.log(`name:${name}`);
+    // console.log(`age:${age}`);
+    foo();
+    const a = new Person('xiaohong', 10);
+    console.log(JSON.stringify(a));
+    console.log(user);
+    import { city as myCity, myName } from './module-b.js'; //在import中, 通过as来改变输入变量的名称. 
+    // import * as ModuleB from ''
+    console.log(`city:${myCity}`);
+    console.log(`myName:${myName}`);
+  </script>
+</body>
+</html>
