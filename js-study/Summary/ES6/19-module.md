@@ -33,3 +33,7 @@ as可以为导入导出指定别名
 ## export 与 import 的复合写法
 如果在一个模块之中, 先输入后输出同一个模块, import语句可以与export语句写在一起.
 
+## import函数
+
+可以通过import函数来按需加载需要的模块, import函数返回一个Promise对象, then函数参数的值就是该模块整体导出的值. 
+
