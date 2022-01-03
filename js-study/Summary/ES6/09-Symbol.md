@@ -4,7 +4,7 @@ ES6引入了一个新的原始数据类型Symbol, 表示独一无二的值. 主�
 
 ## Symbol值的创建
 
-* Symbol(): Symbol的值可以通过Symbol()函数来构建. 注意, 由于Symbol是原始数据类型的值, 不是对象, 因此不能再Symbol函数前面加上new关键字. Sysbo()函数可接受一个字符串, 用于对该Symbol值的说明, 在调试打印的时候, 该字符串会显示在控制台上, 方便于调试.
+* Symbol(): Symbol的值可以通过Symbol()函数来构建. 注意, 由于Symbol是原始数据类型的值, 不是对象, 因此不能再Symbol函数前面加上new关键字. Symbol()函数可接受一个字符串, 用于对该Symbol值的说明, 在调试打印的时候, 该字符串会显示在控制台上, 方便于调试.
 * Symbol.for(): 从全局Symbol注册表查询指定key的Symbol. 如果找到, 返回该值, 如果不存在, 创建一个新的Symbol的值, 并注册在全局Symbol注册表中.
 
 
