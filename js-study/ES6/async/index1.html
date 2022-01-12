@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>异步函数中, 多个异步操作的同步执行</title>
+</head>
+<body>
+  <script>
+
+    function p1() {
+      return new Promise((resolve, reject)=>{
+        setTimeout(() => {
+          console.log('p1 resolve');
+          resolve('p1');
+        }, 2000);
+      })
+    }
+    function p2() {
+      return new Promise((resolve, reject)=>{
+        setTimeout(() => {
+          console.log('p2 resolve');
+          resolve('p2');
+        }, 1000);
+      })
+    }
+    // 在异步函数中, 如果await后面有一个异步操作, 则需要等到该异步操作完成后, 然后执行后面的代码
+    async function asyncF1() {
+      const value1 = await p1(); 
+      const value2 = await p2(); //要等到p1里面的异步操作完成后, 才会这个await指令
+      return [value1, value2];
+    }
+
+    asyncF1().then(value=>{
+      console.log('async f1 then');
+      console.log(value);
+    })
+  </script>
+</body>
+</html>
