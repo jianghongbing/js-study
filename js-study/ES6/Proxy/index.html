@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proxy</title>
+</head>
+
+<body>
+  <script>
+    let obj = {
+      name: 'xiaoming',
+      age: 10,
+      logInfo() {
+        console.log(`my name is ${this.name}, age is ${this.age}`);
+      },
+      increaseAge() {
+        this.age++
+      }
+    }
+    let proxy = new Proxy(obj, {});
+    // 代理对象和被代理对象不相等
+    console.log(proxy === obj);
+    // 被代理的对象有和被代理对象相同的属性
+    console.log(proxy.hasOwnProperty('name'));
+    // 改变代理的值也会体现到被代理的对象上 
+    proxy.name = 'daming'; // obj的name也会发生改变
+    proxy.age++;
+    // 使用proxy来调用被代理对象的方法 
+    proxy.increaseAge();
+    proxy.logInfo();
+    console.log(proxy)
+    console.log(obj);
+    // 修改被代理对象的值也会体现在代理对象中
+    obj.name = 'zhangsan';
+    obj.increaseAge();
+    console.log(proxy)
+
+    // 通过handler提供的setter和getter来拦截对属性的设置和访问操作
+    proxy = new Proxy(obj, {
+      // 对set进行拦截, 当通过点语法来设置proxy的属性时, handler的set会得到调用
+      // handler的key一般都为一个函数, 该函数都会接受一个receiver对象, 该对象就是proxy本身
+      set(target, propKey, value, receiver) {
+        // console.log(receiver);
+        console.log(receiver === proxy);
+        if(propKey in target) {
+          console.log(`obj:${JSON.stringify(target)}, propKey:${propKey}, value:${value}`);
+          return target[propKey] = value;
+        }else {
+          console.error(`${JSON.stringify(target)} 上没有${propKey}属性, 请检查obj对象`);
+        }
+      },
+      // 对访问proxy的属性进行拦截
+      get(target, propKey) {
+        if(propKey in target) {
+          return target[propKey];
+        }else {
+          console.error(`${JSON.stringify(target)} 上没有${propKey}属性, 请检查访问的属性`);
+        }
+      }
+    })
+
+    proxy.name = 'xiaomei';
+    proxy.myName = 'xiaojiang';
+    proxy.increaseAge();
+    console.log(proxy.name);
+    console.log(proxy.myName);
+    console.log(proxy);
+
+    const revocable = Proxy.revocable(obj, {
+      set(target, propKey, value) {
+        if(propKey in target) {
+          target[propKey] = value;
+        }else {
+          console.log(`${propKey}不在对象上`);
+        }
+      }
+    })
+    revocable.proxy.name = 'lisi';
+    console.log(proxy);
+
+    revocable.revoke();
+    console.log(proxy);
+    // 在revoke后, proxy的操作都不能使用(通过proxy访问被代理对象的属性和方法), 如果使用会抛出TypeError异常
+    revocable.proxy.name = 'wangwu';
+    console.log(revocable.proxy.name);
+    console.log(proxy);
+
+  </script>
+</body>
+
+</html>
