@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reflect</title>
+</head>
+<body>
+  <script>
+    const obj = {
+      name: 'xiaoming',
+      greeting(somebody) {
+        console.log(`${this.name} greet to ${somebody}`);
+      }
+    }
+    const obj2 = {
+      name: 'zhangsan'
+    }
+    Reflect.apply(obj.greeting, obj, ['xiaohong']);
+    // 以前的apply的使用方式
+    obj.greeting.apply(obj2, [obj.name]);
+    // 通过Reflect的方式来使用
+    Reflect.apply(obj.greeting, obj2, [obj.name]);
+
+    class Dog {
+      constructor(name, age) {
+        this.name = name;
+        this.age = age;
+      }
+    }
+    // 通过构造函数来创建对象
+    let dahuang = new Dog('大黄', 10);
+    console.log(dahuang);
+    // 通过Reflect的方式来创建
+    dahuang = Reflect.construct(Dog, ['来福', 10]);
+    console.log(dahuang);
+
+    // 以前属性描述符的方式定义对象的属性, Object.defineProperty方法没有返回值, 但是在添加属性失败时, 会抛出异常 
+    let result = Object.defineProperty(obj, 'age', {
+      value: 10,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    })
+    console.log(result);
+    console.log(obj)
+    // 通过Reflect的方式来定义属性, 在定义成功后, 返回一个boolean值作为标志, 添加成功为true, 添加失败为false. 
+    result = Reflect.defineProperty(obj, 'sex', {
+      value: 'male',
+      enumerable: true,
+      configurable: true,
+      writable: true
+    })
+    console.log(result);
+    console.log(obj);
+
+    Object.freeze(obj2);
+    try {
+      // Object的defineProperty添加属性失败时, 抛出异常
+      Object.defineProperty(obj2, 'age', {
+        value: 10
+      })
+    } catch(error) {
+      console.log(error);
+    }
+    // 添加属性失败时返回false 
+    if(Reflect.defineProperty(obj2, 'sex', {
+      value: 'male'
+    })) {
+      console.log('通过Reflect的方式添加属性成功');
+    }else {
+      console.log('通过Reflect的方式添加属性失败');
+    }
+
+    // 删除对象的属性
+    // 通过delete的方式删除
+    delete obj.sex;
+    // 通过Reflect的方式来删除
+    result = Reflect.deleteProperty(obj, 'age');
+    console.log(result);
+    console.log(obj);
+
+    // 获取对象属性的值
+    let name = Reflect.get(obj, 'name');
+    console.log(obj);
+    // 设置对象属性的值, 设置成功返回true, 设置失败返回false 
+    Reflect.set(obj, 'name', 'daming');
+    console.log(obj);
+    // 获取对象属性描述符
+    console.log(Reflect.getOwnPropertyDescriptor(obj, 'name'));
+    // 获取对象的原型
+    console.log(Reflect.getPrototypeOf(dahuang));
+    // 判断某个对象和其原型链上是否存在某个属性
+    // 通过 in的方式来判断
+    console.log('name' in obj);
+    // 通过Reflect的方式来判断
+    console.log(Reflect.has(obj, 'name'));
+    const obj3 = {
+      name: 'obj3'
+    }
+    // 禁止将新的属性添加到对象上
+    result = Reflect.preventExtensions(obj3);
+    console.log(result);
+    // 判断某个对象是否是可扩展的, 也就是是否可以添加新的属性到该对象上
+    console.log(Reflect.isExtensible(obj3));
+    obj3.age = 10; //在不可扩展的对象上添加属性, 没有效果
+    console.log(obj3);
+    const obj4 = {
+      age: 10
+    }
+    // Object.setPrototypeOf(obj4, obj3) // 通过Object的setPrototypeOf的方式来设置原型
+    result = Reflect.setPrototypeOf(obj4, obj3); // 通过 Reflect的setPrototypeOf来设置
+    console.log(result);
+    // 获取自身属性的key的列表
+    console.log(Object.keys(obj4)); 
+    //通过Reflect的方式获取
+    console.log(Reflect.ownKeys(obj4));
+
+
+    const obj5 = {
+      name: 'obj5',
+      age: 10
+    }
+
+
+    // Proxy 和 Reflect的搭配使用
+    const proxy = new Proxy(obj5, {
+      set(target, propKey, value, receiver) {
+        console.log(target, propKey, value, receiver);
+        return Reflect.set(target, propKey, value, receiver);
+      },
+      get(target, propKey) {
+        console.log(target, propKey);
+        return Reflect.get(target, propKey);
+      }
+    })
+
+    proxy.name = 'obj55';
+    console.log(proxy.name, proxy.age);
+  </script>
+</body>
+</html>
