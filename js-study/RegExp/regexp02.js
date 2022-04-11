@@ -32,6 +32,15 @@ reg = /\S/
 console.log(reg.exec('12345'))
 console.log(reg.exec(' \n \r'))
 
+// 匹配除终止符之外的任何单个字符, 在字符集内, 点失去了它的特殊意义, 并与文字点匹配
+reg = /.a/
+console.log(reg.exec('ab ab ba'))
+console.log(reg.exec('ababca'))
+console.log(reg.test('...'))
+reg = /[.a]/
+console.log(reg.test('...'))
+
+
 
 
 
